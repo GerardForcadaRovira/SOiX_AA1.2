@@ -18,13 +18,12 @@
 /*terminar ajustes de memoria
 semaforos
 XML
-tiempo dentro de los hijos
 */
 
 ///Si se va un cliente clientin = true
 
 ///struct de memoria compartida
-struct SharedMem {int time; bool table1Client;bool table2Client;bool table3Client;bool table1food;bool table2food;bool table3food; bool client1out; bool client1in;bool client2out; bool client2in;bool client3out; bool client3in; };
+struct SharedMem {int time; bool table1Client;bool table2Client;bool table3Client;bool table1food;bool table2food;bool table3food; bool client1out; bool client2out; bool client3out; };
 
 int main()
 {
@@ -50,67 +49,68 @@ int main()
     pid1 = fork();
     if (pid1==0){
     ///hijo 1
-        int start1Time, start2Time, start3Time;
+        int startTime;
         int rand3, rand2;
+        bool clientin = true;
         while(true){
 
             if((shmPTR->table1Client)||(shmPTR->table2Client)||(shmPTR->table3Client)){
-                if(shmPTR->clientin){
-                    rand3 = rand()%3;
-                    rand2 = rand()%2;
-                    shmPTR->clientin = false;
+                rand3 = rand()%3;
+                rand2 = rand()%2;
+                if(clientin){
                     startTime = shmPTR->time;
+                    clientin =false;
                 }
-            }
 
+                if(startTime-5>=shmPTR->time)
                     if((shmPTR->table1Client)&&(!shmPTR->table2Client)&&(!shmPTR->table3Client)){
-                    if(start1Time-5>=shmPTR->time)
+                        clientin =true;
                         shmPTR->table1Client = false;
 
                     }else if((!shmPTR->table1Client)&&(shmPTR->table2Client)&&(!shmPTR->table3Client)){
-                    if(start2Time-5>=shmPTR->time)
+                        clientin =true;
                         shmPTR->table2Client = false;
 
                     }else if((!shmPTR->table1Client)&&(!shmPTR->table2Client)&&(shmPTR->table3Client)){
-                    if(start3Time-5>=shmPTR->time)
+                        clientin =true;
                         shmPTR->table3Client = false;
 
                     }else if((shmPTR->table1Client)&&(!shmPTR->table2Client)&&(shmPTR->table3Client)){
                         if(rand2 == 0){
-                        if(start1Time-5>=shmPTR->time)
+                            clientin =true;
                             shmPTR->table1Client = false;
                         }else{
-                        if(start3Time-5>=shmPTR->time)
+                            clientin =true;
                             shmPTR->table3Client = false;
                         }
 
                     }else if((shmPTR->table1Client)&&(shmPTR->table2Client)&&(!shmPTR->table3Client)){
                         if(rand2 == 0){
-                        if(start1Time-5>=shmPTR->time)
+                            clientin =true;
                             shmPTR->table1Client = false;
                         }else{
-                        if(start2Time-5>=shmPTR->time)
+                            clientin =true;
                             shmPTR->table2Client = false;
                         }
 
                     }else if((!shmPTR->table1Client)&&(shmPTR->table2Client)&&(shmPTR->table3Client)){
                         if(rand2 == 0){
-                        if(start2Time-5>=shmPTR->time)
+                            clientin =true;
                             shmPTR->table2Client = false;
                         }else{
-                        if(start3Time-5>=shmPTR->time)
+                            clientin =true;
                             shmPTR->table3Client = false;
                         }
 
                     }else if((shmPTR->table1Client)&&(shmPTR->table2Client)&&(shmPTR->table3Client)){
                         if(rand3 == 0){
-                        if(start1Time-5>=shmPTR->time)
+                            clientin =true;
                             shmPTR->table1Client = false;
                         }else if(rand3 == 1){
-                        if(start2Time-5>=shmPTR->time)
+                            clientin =true;
                             shmPTR->table2Client = false;
                         }else{
-                        if(start3Time-5>=shmPTR->time)
+                            clientin =true;
                             shmPTR->table3Client = false;
                         }
 
@@ -125,20 +125,50 @@ int main()
         pid2 = fork();
         if(pid2==0){
         ///hijo 2
-
+            int start1Time, start2Time, start3Time;
+            start1Time = start2Time = start3Time = -5;
             while(true){
 
             if((shmPTR->table1food)||(shmPTR->table2food)||(shmPTR->table3food)){
+                if(shmPTR->client1out){
+                shmPTR->client1out = false;
 
-                if(shmPTR->table1food){
-                    shmPTR->table1food = false;
+                    if(shmPTR->table1food){
+                        start1Time = shmPTR->time;
+                    }
+                }
+                if(shmPTR->client2out){
+                shmPTR->client2out = false;
 
-                }else if(shmPTR->table2food){
-                    shmPTR->table2food = false;
+                    if(shmPTR->table2food){
+                        start2Time = shmPTR->time;
+                    }
+                }
+                if(shmPTR->client3out){
+                shmPTR->client3out = false;
 
-                }else if (shmPTR->table3food){
-                    shmPTR->table3food = false;
+                    if(shmPTR->table3food){
+                        start3Time = shmPTR->time;
+                    }
+                }
 
+                if((start1Time-5)>=shmPTR->time){
+                    if(shmPTR->table1food){
+                        shmPTR->table1food = false;
+
+                    }
+                }
+                if((start2Time-5)>=shmPTR->time){
+                    if(shmPTR->table2food){
+                        shmPTR->table2food = false;
+
+                    }
+                }
+                if((start3Time-5)>=shmPTR->time){
+                    if(shmPTR->table3food){
+                        shmPTR->table3food = false;
+
+                    }
                 }
 
             }
@@ -198,11 +228,13 @@ int main()
                     case 1:
                     //depositar
                     graficos.DejaComida(COMIDA_VERDE);
+                    graficos.PonPedido(1,COMIDA_VERDE);
                     break;
 
                     case 2:
                     //depositar
                     graficos.DejaComida(COMIDA_VERDE);
+                    graficos.PonPedido(2,COMIDA_VERDE);
                     break;
 
                     case 3:
