@@ -238,7 +238,7 @@ bool GraficoSFML::DejaComida(sf::Color _queComida)
     float spanse;
 
     spanse = currentTime - startTime;
-    std::cout << spanse << std::endl;
+    //std::cout << spanse << std::endl;
 
 
     if(spanse>0.1){

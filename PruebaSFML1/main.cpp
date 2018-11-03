@@ -23,7 +23,7 @@ XML
 ///Si se va un cliente clientin = true
 
 ///struct de memoria compartida
-struct SharedMem {int time; bool table1Client;bool table2Client;bool table3Client;bool table1food;bool table2food;bool table3food; bool client1out; bool client2out; bool client3out; };
+struct SharedMem {int time; bool table1Client = true;bool table2Client = true;bool table3Client = true;bool table1food;bool table2food;bool table3food; bool client1out; bool client2out; bool client3out; };
 
 int main()
 {
@@ -41,7 +41,7 @@ int main()
     ///Zona de memoria compartida
     key_t shmKey = ftok("./",'a');
     int shmID = shmget(shmKey, sizeof(struct SharedMem), IPC_CREAT|0666);
-    struct SharedMem* shmPTR = (struct SharedMem*)shmat(shmID,NULL,0);
+    SharedMem* shmPTR = (SharedMem*)shmat(shmID,NULL,0);
 
     ///creacion de procesos
     pid_t pid1, pid2;
@@ -181,8 +181,13 @@ int main()
 
         GraficoSFML graficos;
 
+            for (size_t i =0 ; i< NUM_MESAS; i++)
+            {
+                graficos.VaciaTaburete(i);
+            }
         while(window.isOpen())
         {
+            //std::cout<< shmPTR->table3Client<<std::endl;
             sf::Event event;
             while(window.pollEvent(event))
             {
@@ -257,6 +262,15 @@ int main()
 
             }
 
+            if(!shmPTR->table1Client){
+            graficos.OcupaTaburete(0);
+            }
+            if(!shmPTR->table2Client){
+            graficos.OcupaTaburete(1);
+            }
+            if(!shmPTR->table3Client){
+            graficos.OcupaTaburete(2);
+            }
             window.clear();
 
 

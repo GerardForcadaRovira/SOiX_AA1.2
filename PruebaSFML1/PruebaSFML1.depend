@@ -1290,13 +1290,18 @@
 1541178694 source:/home/gerard/Desktop/SOiX AA1/PruebaSFML1/src/GraficoSFML.cpp
 	"GraficoSFML.h"
 
-1541178925 source:/home/gerard/Desktop/SOiXAA1/PruebaSFML1/main.cpp
+1541268234 source:/home/gerard/Desktop/SOiXAA1/PruebaSFML1/main.cpp
 	<iostream>
 	<SFML/Graphics.hpp>
 	<unistd.h>
 	<sys/wait.h>
 	<vector>
 	"GraficoSFML.h"
+	<time.h>
+	<stdlib.h>
+	<sys/types.h>
+	<sys/ipc.h>
+	<sys/shm.h>
 
 1539795844 /home/gerard/Desktop/SOiXAA1/SFML-2.5.0/include/SFML/Graphics.hpp
 	<SFML/Window.hpp>
@@ -1712,6 +1717,6 @@
 	<SFML/Graphics.hpp>
 	<vector>
 
-1541178694 source:/home/gerard/Desktop/SOiXAA1/PruebaSFML1/src/GraficoSFML.cpp
+1541268441 source:/home/gerard/Desktop/SOiXAA1/PruebaSFML1/src/GraficoSFML.cpp
 	"GraficoSFML.h"
 
