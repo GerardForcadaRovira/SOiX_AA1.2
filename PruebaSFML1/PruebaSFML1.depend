@@ -1290,7 +1290,7 @@
 1541178694 source:/home/gerard/Desktop/SOiX AA1/PruebaSFML1/src/GraficoSFML.cpp
 	"GraficoSFML.h"
 
-1541268234 source:/home/gerard/Desktop/SOiXAA1/PruebaSFML1/main.cpp
+1541348278 source:/home/gerard/Desktop/SOiXAA1/PruebaSFML1/main.cpp
 	<iostream>
 	<SFML/Graphics.hpp>
 	<unistd.h>

@@ -23,7 +23,7 @@ XML
 ///Si se va un cliente clientin = true
 
 ///struct de memoria compartida
-struct SharedMem {int time; bool table1Client = true;bool table2Client = true;bool table3Client = true;bool table1food;bool table2food;bool table3food; bool client1out; bool client2out; bool client3out; };
+struct SharedMem {int time; bool table1Client = false;bool table2Client = false;bool table3Client = false;bool table1food;bool table2food;bool table3food; bool client1out; bool client2out; bool client3out; };
 
 int main()
 {
@@ -39,9 +39,15 @@ int main()
     float duracionSalida = 5.0;
 
     ///Zona de memoria compartida
-    key_t shmKey = ftok("./",'a');
-    int shmID = shmget(shmKey, sizeof(struct SharedMem), IPC_CREAT|0666);
-    SharedMem* shmPTR = (SharedMem*)shmat(shmID,NULL,0);
+    SharedMem* shmPTR;
+    key_t shmKey = ftok("./",'h');
+    int shmID = shmget(shmKey , sizeof(struct SharedMem), IPC_CREAT | 0666);
+    shmPTR = (SharedMem*)shmat(shmID,NULL,0);
+    shmPTR->table1Client =true;
+    shmPTR->table2Client =true;
+    shmPTR->table3Client =true;
+    std::cout<<shmPTR->table1Client<< ' '<<shmPTR->table2Client<< ' '<<shmPTR->table3Client<< ' '<<std::endl;
+
 
     ///creacion de procesos
     pid_t pid1, pid2;
@@ -226,20 +232,31 @@ int main()
 
                     case 0:
                     //depostiar
-                    graficos.DejaComida(COMIDA_VERDE);
-                    graficos.PonPedido(0,COMIDA_VERDE);
+                    if(graficos.DejaComida(COMIDA_VERDE)){
+                        graficos.PonPedido(0,COMIDA_VERDE);
+                        shmPTR->table1food = true;
+                        shmPTR->client1out = true;
+                    }
+
+
                     break;
 
                     case 1:
                     //depositar
-                    graficos.DejaComida(COMIDA_VERDE);
-                    graficos.PonPedido(1,COMIDA_VERDE);
+                    if(graficos.DejaComida(COMIDA_VERDE)){
+                        graficos.PonPedido(1,COMIDA_VERDE);
+                        shmPTR->table2food = true;
+                        shmPTR->client2out = true;
+                    }
                     break;
 
                     case 2:
                     //depositar
-                    graficos.DejaComida(COMIDA_VERDE);
-                    graficos.PonPedido(2,COMIDA_VERDE);
+                    if(graficos.DejaComida(COMIDA_VERDE)){
+                        graficos.PonPedido(2,COMIDA_VERDE);
+                        shmPTR->table3food = true;
+                        shmPTR->client3out = true;
+                    }
                     break;
 
                     case 3:
