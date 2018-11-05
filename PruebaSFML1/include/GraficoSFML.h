@@ -38,6 +38,7 @@ class GraficoSFML
 
         GraficoSFML();
         bool TabureteVacio(int _posicion);
+        bool PedidoVacio(int _posicion);
         void OcupaTaburete(int _posicion);
         void VaciaTaburete(int _posicion);
 

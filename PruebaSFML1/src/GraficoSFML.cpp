@@ -136,6 +136,16 @@ bool GraficoSFML::TabureteVacio(int _posicion)
     return false;
 }
 
+bool GraficoSFML::PedidoVacio(int _posicion)
+{
+    sf::Color color = aPedidosADibujar[_posicion].getFillColor();
+    if (color == PEDIDO_VACIO)
+    {
+        return true;
+    }
+    return false;
+}
+
 void GraficoSFML::OcupaTaburete(int _posicion)
 {
     aTaburetesADibujar[_posicion].setFillColor(TABURETE_OCUPADO);

@@ -23,7 +23,7 @@ XML
 ///Si se va un cliente clientin = true
 
 ///struct de memoria compartida
-struct SharedMem {int time; bool table1Client = false;bool table2Client = false;bool table3Client = false;bool table1food;bool table2food;bool table3food; bool client1out; bool client2out; bool client3out; };
+struct SharedMem {int time; bool table1Client = false;bool table2Client = false;bool table3Client = false;bool table1food;bool table2food;bool table3food; bool client1out; bool client2out; bool client3out; bool client1leave; bool client2leave; bool client3leave; };
 
 int main()
 {
@@ -46,6 +46,10 @@ int main()
     shmPTR->table1Client =true;
     shmPTR->table2Client =true;
     shmPTR->table3Client =true;
+    shmPTR->client1leave = false;
+    shmPTR->client2leave = false;
+    shmPTR->client3leave = false;
+    shmPTR->time = 120;
     std::cout<<shmPTR->table1Client<< ' '<<shmPTR->table2Client<< ' '<<shmPTR->table3Client<< ' '<<std::endl;
 
 
@@ -54,7 +58,7 @@ int main()
     int status;
     pid1 = fork();
     if (pid1==0){
-    ///hijo 1
+    ///hijo 1 entrada de los clientes
         int startTime;
         int rand3, rand2;
         bool clientin = true;
@@ -130,7 +134,7 @@ int main()
     else{
         pid2 = fork();
         if(pid2==0){
-        ///hijo 2
+        ///hijo 2 salida de clientes
             int start1Time, start2Time, start3Time;
             start1Time = start2Time = start3Time = -5;
             while(true){
@@ -161,18 +165,24 @@ int main()
                 if((start1Time-5)>=shmPTR->time){
                     if(shmPTR->table1food){
                         shmPTR->table1food = false;
+                        shmPTR->client1leave = true;
+                        shmPTR->table1Client = true;
 
                     }
                 }
                 if((start2Time-5)>=shmPTR->time){
                     if(shmPTR->table2food){
                         shmPTR->table2food = false;
+                        shmPTR->client2leave = true;
+                        shmPTR->table2Client = true;
 
                     }
                 }
                 if((start3Time-5)>=shmPTR->time){
                     if(shmPTR->table3food){
                         shmPTR->table3food = false;
+                        shmPTR->client3leave = true;
+                        shmPTR->table3Client = true;
 
                     }
                 }
@@ -182,7 +192,7 @@ int main()
       }
     }///final del hijo 2
     if((pid1>0)&&(pid2>0)){
-    ///padre
+    ///padre logica general e impresion por pantalla
         sf::RenderWindow window(sf::VideoMode(WINDOW_H,WINDOW_V), TITLE);
 
         GraficoSFML graficos;
@@ -232,19 +242,19 @@ int main()
 
                     case 0:
                     //depostiar
-                    if(graficos.DejaComida(COMIDA_VERDE)){
-                        graficos.PonPedido(0,COMIDA_VERDE);
+                    if(graficos.PedidoVacio(0) && !graficos.TabureteVacio(0)){
+
+                        if(graficos.DejaComida(COMIDA_VERDE)) graficos.PonPedido(0,COMIDA_VERDE);
+
                         shmPTR->table1food = true;
                         shmPTR->client1out = true;
                     }
-
-
                     break;
 
                     case 1:
                     //depositar
-                    if(graficos.DejaComida(COMIDA_VERDE)){
-                        graficos.PonPedido(1,COMIDA_VERDE);
+                    if(graficos.PedidoVacio(1) && !graficos.TabureteVacio(1)){
+                        if(graficos.DejaComida(COMIDA_VERDE))graficos.PonPedido(1,COMIDA_VERDE);
                         shmPTR->table2food = true;
                         shmPTR->client2out = true;
                     }
@@ -252,8 +262,8 @@ int main()
 
                     case 2:
                     //depositar
-                    if(graficos.DejaComida(COMIDA_VERDE)){
-                        graficos.PonPedido(2,COMIDA_VERDE);
+                    if(graficos.PedidoVacio(2) && !graficos.TabureteVacio(2)){
+                        if(graficos.DejaComida(COMIDA_VERDE))graficos.PonPedido(2,COMIDA_VERDE);
                         shmPTR->table3food = true;
                         shmPTR->client3out = true;
                     }
@@ -276,6 +286,30 @@ int main()
                     }
 
                     click = false;
+
+            }
+
+            if(shmPTR->client1leave){
+
+            graficos.VaciaTaburete(0);
+            graficos.VaciaPedido(0);
+            shmPTR->client1leave = false;
+
+            }
+
+            if(shmPTR->client2leave){
+
+            graficos.VaciaTaburete(1);
+            graficos.VaciaPedido(1);
+            shmPTR->client2leave = false;
+
+            }
+
+            if(shmPTR->client3leave){
+
+            graficos.VaciaTaburete(2);
+            graficos.VaciaPedido(2);
+            shmPTR->client3leave = false;
 
             }
 
