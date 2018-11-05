@@ -22,12 +22,19 @@ class GraficoSFML
         sf::CircleShape jugador;
         sf::RectangleShape manoIzquierda;
         sf::RectangleShape manoDerecha;
+        sf::Color pedidos1 [30];
+        sf::Color pedidos2 [30];
+        sf::Color pedidos3 [30];
+        int table1List;
+        int table2List;
+        int table3List;
 
         std::vector<sf::RectangleShape> aObjetosADibujar;
         std::vector<sf::Text> aTextosADibujar;
         sf::CircleShape aTaburetesADibujar[NUM_MESAS];
         sf::RectangleShape aPedidosADibujar[NUM_MESAS];
 
+        int clientesServidos;
         int tiempoRestante;
         int numClientesRestantes;
         sf::Vector2f posicionJugador;
@@ -39,7 +46,7 @@ class GraficoSFML
         GraficoSFML();
         bool TabureteVacio(int _posicion);
         bool PedidoVacio(int _posicion);
-        void OcupaTaburete(int _posicion);
+        void OcupaTaburete(int _posicion,sf::Color colorTabu);
         void VaciaTaburete(int _posicion);
 
         void VaciaPedido(int _posicion);
@@ -53,7 +60,7 @@ class GraficoSFML
         void MueveJugador(sf::Vector2f _posicion);
         int Colisionando(sf::Vector2f ubicacion, std::vector<sf::Vector2f> fOrigenMesas,std::vector<sf::Vector2f> fOrigenDispensadores, sf::Vector2f tamanoMesa);
 
-        void Timer(time_t &startTime);
+        void Timer();
 
         virtual ~GraficoSFML();
 

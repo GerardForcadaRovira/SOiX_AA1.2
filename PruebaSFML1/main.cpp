@@ -20,14 +20,25 @@ semaforos
 XML
 */
 
+bool go1;
 ///Si se va un cliente clientin = true
 
 ///struct de memoria compartida
 struct SharedMem {int time; bool table1Client = false;bool table2Client = false;bool table3Client = false;bool table1food;bool table2food;bool table3food; bool client1out; bool client2out; bool client3out; bool client1leave; bool client2leave; bool client3leave; };
 
+void handler1 (int sign){
+    //timerLess = true;
+    go1 = true;
+
+    alarm(1);
+    //times++;
+    //putPerson = true;
+
+    }
+
 int main()
 {
-    srand(time(NULL));
+    //srand(time(NULL));
     ///variables
     bool click = false;
     int interactingObject = -1;
@@ -37,6 +48,9 @@ int main()
     int clientesRestantes = 5;
     float duracionLlegada = 5.0;
     float duracionSalida = 5.0;
+
+
+
 
     ///Zona de memoria compartida
     SharedMem* shmPTR;
@@ -52,6 +66,10 @@ int main()
     shmPTR->time = 120;
     std::cout<<shmPTR->table1Client<< ' '<<shmPTR->table2Client<< ' '<<shmPTR->table3Client<< ' '<<std::endl;
 
+    signal (SIGALRM,handler1);
+
+
+    alarm(1);
 
     ///creacion de procesos
     pid_t pid1, pid2;
@@ -131,6 +149,7 @@ int main()
         }
 
     }///final del hijo 1
+
     else{
         pid2 = fork();
         if(pid2==0){
@@ -191,6 +210,7 @@ int main()
         }
       }
     }///final del hijo 2
+
     if((pid1>0)&&(pid2>0)){
     ///padre logica general e impresion por pantalla
         sf::RenderWindow window(sf::VideoMode(WINDOW_H,WINDOW_V), TITLE);
@@ -227,7 +247,17 @@ int main()
                     }
                 }
             }
-            graficos.Timer(starting);
+
+            if(graficos.clientesServidos>=5 || graficos.tiempoRestante<=0){
+                window.close();
+            }
+
+            //graficos.Timer(starting);
+            if(go1){
+                graficos.Timer();
+                go1 = false;
+            }
+
             shmPTR->time = graficos.tiempoRestante;
 
             interactingObject = graficos.Colisionando(graficos.posicionJugador,graficos.aOrigenMesas,graficos.aOrigenDispensadores,graficos.sizeMesa);
@@ -244,28 +274,33 @@ int main()
                     //depostiar
                     if(graficos.PedidoVacio(0) && !graficos.TabureteVacio(0)){
 
-                        if(graficos.DejaComida(COMIDA_VERDE)) graficos.PonPedido(0,COMIDA_VERDE);
-
+                        if(graficos.DejaComida(graficos.pedidos1[graficos.table1List])){
+                        graficos.PonPedido(0,graficos.pedidos1[graficos.table1List]);
                         shmPTR->table1food = true;
                         shmPTR->client1out = true;
+                        }
                     }
                     break;
 
                     case 1:
                     //depositar
                     if(graficos.PedidoVacio(1) && !graficos.TabureteVacio(1)){
-                        if(graficos.DejaComida(COMIDA_VERDE))graficos.PonPedido(1,COMIDA_VERDE);
+                        if(graficos.DejaComida(graficos.pedidos2[graficos.table2List])){
+                        graficos.PonPedido(1,graficos.pedidos2[graficos.table2List]);
                         shmPTR->table2food = true;
                         shmPTR->client2out = true;
+                        }
                     }
                     break;
 
                     case 2:
                     //depositar
                     if(graficos.PedidoVacio(2) && !graficos.TabureteVacio(2)){
-                        if(graficos.DejaComida(COMIDA_VERDE))graficos.PonPedido(2,COMIDA_VERDE);
+                        if(graficos.DejaComida(graficos.pedidos3[graficos.table3List])){
+                        graficos.PonPedido(2,graficos.pedidos3[graficos.table3List]);
                         shmPTR->table3food = true;
                         shmPTR->client3out = true;
+                        }
                     }
                     break;
 
@@ -294,6 +329,8 @@ int main()
             graficos.VaciaTaburete(0);
             graficos.VaciaPedido(0);
             shmPTR->client1leave = false;
+            graficos.clientesServidos++;
+            graficos.table1List++;
 
             }
 
@@ -302,6 +339,8 @@ int main()
             graficos.VaciaTaburete(1);
             graficos.VaciaPedido(1);
             shmPTR->client2leave = false;
+            graficos.clientesServidos++;
+            graficos.table2List++;
 
             }
 
@@ -310,17 +349,19 @@ int main()
             graficos.VaciaTaburete(2);
             graficos.VaciaPedido(2);
             shmPTR->client3leave = false;
+            graficos.clientesServidos++;
+            graficos.table3List++;
 
             }
 
             if(!shmPTR->table1Client){
-            graficos.OcupaTaburete(0);
+            graficos.OcupaTaburete(0,graficos.pedidos1[graficos.table1List]);
             }
             if(!shmPTR->table2Client){
-            graficos.OcupaTaburete(1);
+            graficos.OcupaTaburete(1,graficos.pedidos2[graficos.table2List]);
             }
             if(!shmPTR->table3Client){
-            graficos.OcupaTaburete(2);
+            graficos.OcupaTaburete(2,graficos.pedidos3[graficos.table3List]);
             }
             window.clear();
 
@@ -345,6 +386,10 @@ int main()
 
             window.display();
             }
+
+        kill(pid1,SIGKILL);
+        kill(pid2,SIGKILL);
+
     }///final proceso padre
 
 

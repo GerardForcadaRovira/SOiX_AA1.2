@@ -1,8 +1,16 @@
 #include "GraficoSFML.h"
+#include <iostream>
+#include <signal.h>
+
+/*#include "../../dep/inc/XML/rapidxml.hpp"
+#include "../../dep/inc/XML/rapidxml_utils.hpp"
+#include "../../dep/inc/XML/rapidxml_iterators.hpp"
+#include "../../dep/inc/XML/rapidxml_print.hpp"*/
 
 GraficoSFML::GraficoSFML():posicionJugador(sf::Vector2f(385.f,285.f)),jugador(30.f)
 {
     //ctor
+    clientesServidos = 0;
     tiempoRestante = 120;
     numClientesRestantes = 5;
     font.loadFromFile("courier.ttf");
@@ -20,6 +28,36 @@ GraficoSFML::GraficoSFML():posicionJugador(sf::Vector2f(385.f,285.f)),jugador(30
     InitPedidos();
     InitObjetosFijos();
     InitPlayer();
+
+    table1List = 0;
+    table2List = 0;
+    table3List = 0;
+
+    for(int i = 0;i<30;i++){
+        int randomNum = rand()%3;
+        if(randomNum == 0)
+        pedidos1[i]= COMIDA_VERDE;
+        if(randomNum == 1)
+        pedidos1[i]= COMIDA_AMARILLA;
+        if(randomNum == 2)
+        pedidos1[i]= COMIDA_ROJA;
+
+        randomNum = rand()%3;
+        if(randomNum == 0)
+        pedidos2[i]= COMIDA_VERDE;
+        if(randomNum == 1)
+        pedidos2[i]= COMIDA_AMARILLA;
+        if(randomNum == 2)
+        pedidos2[i]= COMIDA_ROJA;
+
+        randomNum = rand()%3;
+        if(randomNum == 0)
+        pedidos3[i]= COMIDA_VERDE;
+        if(randomNum == 1)
+        pedidos3[i]= COMIDA_AMARILLA;
+        if(randomNum == 2)
+        pedidos3[i]= COMIDA_ROJA;
+    }
 }
 
 void GraficoSFML::InitContadorTiempo()
@@ -42,6 +80,7 @@ void GraficoSFML::InitContadorClientes()
     txtCounterClients.setCharacterSize(14);
     txtCounterClients.setString(std::to_string(numClientesRestantes)+" clientes");
     aTextosADibujar.push_back(txtCounterClients);
+    aTextosADibujar[0].setString(std::to_string(clientesServidos)+" clientes servidos");
 }
 
 void GraficoSFML::InitTaburetes()
@@ -146,9 +185,9 @@ bool GraficoSFML::PedidoVacio(int _posicion)
     return false;
 }
 
-void GraficoSFML::OcupaTaburete(int _posicion)
+void GraficoSFML::OcupaTaburete(int _posicion, sf::Color colorTabu)
 {
-    aTaburetesADibujar[_posicion].setFillColor(TABURETE_OCUPADO);
+    aTaburetesADibujar[_posicion].setFillColor(colorTabu);
 }
 
 void GraficoSFML::VaciaTaburete(int _posicion)
@@ -241,26 +280,23 @@ bool GraficoSFML::DejaComida(sf::Color _queComida)
     return returnInt;
  }
 
- void GraficoSFML::Timer(time_t &startTime){
+ void GraficoSFML::Timer(){
 
-    time_t currentTime;
-    time(&currentTime);
-    float spanse;
 
-    spanse = currentTime - startTime;
     //std::cout << spanse << std::endl;
 
 
-    if(spanse>0.1){
+
 
         tiempoRestante--;
 
-        time(&startTime);
+
 
         aTextosADibujar[1].setString(std::to_string(tiempoRestante)+" seg.");
+        aTextosADibujar[0].setString(std::to_string(clientesServidos)+" clientes servidos");
 
        // txtCounterTime.setString(std::to_string(tiempoRestante)+" seg.");
-    }
+
 
 };
 

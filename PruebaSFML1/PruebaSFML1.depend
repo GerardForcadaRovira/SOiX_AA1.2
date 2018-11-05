@@ -1720,7 +1720,7 @@
 1541268441 source:/home/gerard/Desktop/SOiXAA1/PruebaSFML1/src/GraficoSFML.cpp
 	"GraficoSFML.h"
 
-1541436644 source:/home/chalo/Documents/Repositories/SOiX_AA1.2/PruebaSFML1/main.cpp
+1541444236 source:/home/chalo/Documents/Repositories/SOiX_AA1.2/PruebaSFML1/main.cpp
 	<iostream>
 	<SFML/Graphics.hpp>
 	<unistd.h>
@@ -2142,11 +2142,16 @@
 	<SFML/Graphics/Drawable.hpp>
 	<SFML/Window/GlResource.hpp>
 
-1541437548 /home/chalo/Documents/Repositories/SOiX_AA1.2/PruebaSFML1/include/GraficoSFML.h
+1541444580 /home/chalo/Documents/Repositories/SOiX_AA1.2/PruebaSFML1/include/GraficoSFML.h
 	<iostream>
 	<SFML/Graphics.hpp>
 	<vector>
 
-1541437625 source:/home/chalo/Documents/Repositories/SOiX_AA1.2/PruebaSFML1/src/GraficoSFML.cpp
+1541444571 source:/home/chalo/Documents/Repositories/SOiX_AA1.2/PruebaSFML1/src/GraficoSFML.cpp
 	"GraficoSFML.h"
+	<iostream>
+	<signal.h>
+	"../../dep/inc/XML/rapidxml_utils.hpp"
+	"../../dep/inc/XML/rapidxml_iterators.hpp"
+	"../../dep/inc/XML/rapidxml_print.hpp"
 
